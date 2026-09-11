@@ -7,6 +7,8 @@ import { getCurrentUser } from '@/lib/session';
 
 const inter = Inter({ subsets: ['latin'] });
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'LuxeHaven | Luxury Hotels, Resorts & Private Villas Platform',
   description: 'Book world-class luxury hotels, beach resorts, heritage palaces, and private villas across India.',
