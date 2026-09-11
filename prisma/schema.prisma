@@ -1,0 +1,70 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  name         String
+  avatar       String?
+  createdAt    DateTime      @default(now())
+  reservations Reservation[]
+}
+
+model Hotel {
+  id          String   @id
+  name        String
+  type        String   // "Resort" | "Luxury Hotel" | "Boutique Villa" | "Alpine Chalet"
+  location    String   // City, Country
+  address     String?
+  rating      Float    @default(4.9)
+  image       String
+  description String
+  amenities   String   // Stored as JSON string
+  createdAt   DateTime @default(now())
+  rooms       Room[]
+}
+
+model Room {
+  id           String        @id
+  hotelId      String?
+  name         String
+  description  String
+  price        Float
+  capacity     Int
+  amenities    String        // Stored as JSON string
+  images       String        // Stored as JSON string
+  featured     Boolean       @default(false)
+  sizeSqFt     Int
+  bedType      String
+  rating       Float         @default(4.9)
+  createdAt    DateTime      @default(now())
+  
+  hotel        Hotel?        @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  reservations Reservation[]
+}
+
+model Reservation {
+  id            String   @id @default(uuid())
+  roomId        String
+  userId        String
+  guestName     String
+  guestEmail    String
+  checkIn       String   // ISO YYYY-MM-DD
+  checkOut      String   // ISO YYYY-MM-DD
+  guests        Int
+  totalNights   Int
+  pricePerNight Float
+  totalPrice    Float
+  status        String   @default("CONFIRMED") // CONFIRMED | CANCELLED
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+}
